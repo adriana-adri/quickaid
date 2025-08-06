@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QuickAid Helpdesk</title>
+</head>
+<body>
+    <h1>Submit a Helpdesk Ticket</h1>
+    <form id="ticketForm">
+        <label>Email: <input type="email" id="email" required></label><br>
+        <label>Title: <input type="text" id="title" required></label><br>
+        <label>Category: <input type="text" id="category" required></label><br>
+        <label>Description:<br><textarea id="description" required></textarea></label><br>
+        <button type="submit">Submit</button>
+    </form>
+    <script>
+        document.getElementById('ticketForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const ticket = {
+                email: document.getElementById('email').value,
+                title: document.getElementById('title').value,
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value
+            };
+            const response = await fetch('/api/submit_ticket', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(ticket)
+            });
+            const result = await response.json();
+            alert('Ticket ID: ' + result.id);
+        };
+    </script>
+</body>
+</html>

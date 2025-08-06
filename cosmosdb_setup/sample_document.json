@@ -1,0 +1,8 @@
+{
+  "id": "sample-id",
+  "email": "student@example.com",
+  "title": "Projector Not Working",
+  "category": "Facilities",
+  "description": "Projector in Lecture Hall A is broken.",
+  "status": "New"
+}
