@@ -1,17 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>QuickAid Helpdesk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f6fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            color: #34495e;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .success-message {
+            text-align: center;
+            color: green;
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Submit a Helpdesk Ticket</h1>
-    <form id="ticketForm">
-        <label>Email: <input type="email" id="email" required></label><br>
-        <label>Title: <input type="text" id="title" required></label><br>
-        <label>Category: <input type="text" id="category" required></label><br>
-        <label>Description:<br><textarea id="description" required></textarea></label><br>
-        <button type="submit">Submit</button>
-    </form>
+    <div class="container">
+        <h1>QuickAid Helpdesk</h1>
+        <form id="ticketForm">
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
+
+            <label for="title">Title</label>
+            <input type="text" id="title" required>
+
+            <label for="category">Category</label>
+            <input type="text" id="category" required>
+
+            <label for="description">Description</label>
+            <textarea id="description" required></textarea>
+
+            <button type="submit">Submit Ticket</button>
+        </form>
+        <div class="success-message" id="successMessage"></div>
+    </div>
+
     <script>
         document.getElementById('ticketForm').onsubmit = async (e) => {
             e.preventDefault();
@@ -21,13 +106,23 @@
                 category: document.getElementById('category').value,
                 description: document.getElementById('description').value
             };
-            const response = await fetch('/api/submit_ticket', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(ticket)
-            });
-            const result = await response.json();
-            alert('Ticket ID: ' + result.id);
+
+            try {
+                const response = await fetch('/api/submit_ticket', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(ticket)
+                });
+
+                if (!response.ok) throw new Error('Ticket submission failed.');
+
+                const result = await response.json();
+                document.getElementById('successMessage').textContent = 'Ticket submitted! ID: ' + result.id;
+                document.getElementById('ticketForm').reset();
+            } catch (error) {
+                document.getElementById('successMessage').textContent = 'Error submitting ticket.';
+                document.getElementById('successMessage').style.color = 'red';
+            }
         };
     </script>
 </body>
