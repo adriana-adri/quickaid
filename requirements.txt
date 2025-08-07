@@ -1,0 +1,11 @@
+# Azure Functions
+azure-functions>=1.18.0
+
+# Azure Cosmos DB client
+azure-cosmos>=4.5.0
+
+# Core Python libraries (usually included but good to specify)
+uuid
+
+# Optional: For better JSON handling and debugging
+requests>=2.31.0
