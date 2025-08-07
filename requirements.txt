@@ -1,4 +1,7 @@
-# Azure Functions
+# Flask web framework for Azure Web App
+Flask>=2.3.0
+
+# Azure Functions (if still needed)
 azure-functions>=1.18.0
 
 # Azure Cosmos DB client
