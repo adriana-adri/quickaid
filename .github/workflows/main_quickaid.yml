@@ -66,6 +66,6 @@ jobs:
         with:
           app-name: 'QuickAid'
           slot-name: 'Production'
-          package: '.'
+          package: './frontend'
 
           
