@@ -30,17 +30,6 @@
             margin-bottom: 25px;
         }
 
-        .status-banner {
-            background-color: #e8f4f8;
-            border: 1px solid #3498db;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #2c3e50;
-            font-size: 14px;
-        }
-
         label {
             display: block;
             margin-top: 15px;
@@ -85,27 +74,11 @@
             color: green;
             margin-top: 15px;
         }
-
-        .demo-notice {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 5px;
-            padding: 10px;
-            margin-top: 20px;
-            text-align: center;
-            color: #856404;
-            font-size: 12px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>QuickAid Helpdesk</h1>
-        
-        <div class="status-banner">
-            🚀 Frontend Demo - Backend API Coming Soon!
-        </div>
-        
         <form id="ticketForm">
             <label for="email">Email</label>
             <input type="email" id="email" required>
@@ -122,17 +95,11 @@
             <button type="submit">Submit Ticket</button>
         </form>
         <div class="success-message" id="successMessage"></div>
-        
-        <div class="demo-notice">
-            Note: This is a frontend demo. Backend API integration will be added later.
-        </div>
     </div>
 
     <script>
         document.getElementById('ticketForm').onsubmit = async (e) => {
             e.preventDefault();
-            
-            // Get form data
             const ticket = {
                 email: document.getElementById('email').value,
                 title: document.getElementById('title').value,
@@ -140,25 +107,21 @@
                 description: document.getElementById('description').value
             };
 
-            // Simulate ticket submission for demo
             try {
-                // Generate a demo ticket ID
-                const ticketId = 'DEMO-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-                
-                // Show success message
-                document.getElementById('successMessage').innerHTML = 
-                    `✅ Demo ticket created!<br>Ticket ID: <strong>${ticketId}</strong><br><small>Backend integration coming soon!</small>`;
-                document.getElementById('successMessage').style.color = 'green';
-                
-                // Reset form
+                const response = await fetch('/api/submit_ticket', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(ticket)
+                });
+
+                if (!response.ok) throw new Error('Ticket submission failed.');
+
+                const result = await response.json();
+                document.getElementById('successMessage').textContent = 'Ticket submitted! ID: ' + result.id;
                 document.getElementById('ticketForm').reset();
-                
-                // Log to console for demo purposes
-                console.log('Demo ticket data:', ticket);
-                
             } catch (error) {
-                document.getElementById('successMessage').textContent = 'Demo form submitted successfully!';
-                document.getElementById('successMessage').style.color = 'green';
+                document.getElementById('successMessage').textContent = 'Error submitting ticket.';
+                document.getElementById('successMessage').style.color = 'red';
             }
         };
     </script>
