@@ -65,6 +65,6 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'QuickAid'
-          package: './frontend'
+          package: ./frontend
 
           
