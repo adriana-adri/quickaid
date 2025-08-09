@@ -65,7 +65,6 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'QuickAid'
-          slot-name: 'Production'
-          package: '.'
+          package: './frontend'
 
           
