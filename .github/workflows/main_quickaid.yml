@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python app to Azure Web App - QuickAid
+name: Build and deploy Frontend to Azure Web App - QuickAid
 
 on:
   push:
@@ -19,26 +19,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python version
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      # We don't need Python setup for frontend-only deployment
+      # - name: Set up Python version
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.11'
 
-      - name: Create and start virtual environment
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
+      # - name: Create and start virtual environment
+      #   run: |
+      #     python -m venv venv
+      #     source venv/bin/activate
+      #     pip install -r requirements.txt
         
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
+      # Optional: Add step to run frontend tests here
 
-      - name: Upload artifact for deployment jobs
+      - name: Upload frontend for deployment
         uses: actions/upload-artifact@v4
         with:
-          name: python-app
-          path: |
-            .
-            !venv/
+          name: frontend-app
+          path: frontend/
 
   deploy:
     runs-on: ubuntu-latest
@@ -51,7 +50,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: python-app
+          name: frontend-app
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -65,6 +64,6 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'QuickAid'
-          package: ./frontend
+          package: '.'
 
           
