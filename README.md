@@ -18,3 +18,4 @@ Create:
 - Database: `QuickAidDB`
 - Container: `Tickets` with partition key `/id`
 Add `COSMOS_ENDPOINT` and `COSMOS_KEY` to Azure Function App settings.
+# Test change
