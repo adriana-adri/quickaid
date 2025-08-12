@@ -3,6 +3,18 @@ import json
 import os
 import uuid
 from azure.cosmos import CosmosClient
+import sendgrid
+from sendgrid.helpers.mail import Mail
+
+sg = sendgrid.SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
+
+message = Mail(
+from_email='support@yourdomain.com',
+to_emails=data["email"],
+subject='QuickAid Ticket Submitted',
+html_content=f"Hi, your ticket '{data['title']}' has been received."
+)
+sg.send(message)
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
