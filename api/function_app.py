@@ -7,7 +7,7 @@ from azure.keyvault.secrets import SecretClient
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 # Configure Key Vault connection
-vault_url = "https://<your-vault>.vault.azure.net/"
+vault_url = "https://quickaid.vault.azure.net/"
 credential = DefaultAzureCredential()
 client = SecretClient(vault_url=vault_url, credential=credential)
 
@@ -40,3 +40,4 @@ def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
             "Pass a name in the query string or in the request body for a personalized response.",
             status_code=200
         )
+
