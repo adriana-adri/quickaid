@@ -30,6 +30,7 @@ def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
             name = req_body.get('name')
 
     if name:
+        logging.info("Ticket submitted successfully")  # Added logging
         return func.HttpResponse(
             f"Hello, {name}. This HTTP triggered function executed successfully. "
             f"Using COSMOS_ENDPOINT: {COSMOS_ENDPOINT}"
@@ -40,4 +41,3 @@ def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
             "Pass a name in the query string or in the request body for a personalized response.",
             status_code=200
         )
-
