@@ -9,8 +9,8 @@ from sendgrid.helpers.mail import Mail
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 
-# Initialize Key Vault client (replace with your vault name)
-VAULT_URL = "https://<your-keyvault-name>.vault.azure.net/"
+# Initialize Key Vault client 
+VAULT_URL = "https://quickaid.vault.azure.net/"
 credential = DefaultAzureCredential()
 secret_client = SecretClient(vault_url=VAULT_URL, credential=credential)
 
