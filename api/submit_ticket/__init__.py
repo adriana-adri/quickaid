@@ -46,7 +46,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # Send confirmation email with SendGrid
         sg = sendgrid.SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
         message = Mail(
-            from_email='support@yourdomain.com',
+            from_email='adrianaanuar1241@gmail.com',
             to_emails=data["email"],
             subject='QuickAid Ticket Submitted',
             html_content=f"Hi, your ticket '{data['title']}' has been received."

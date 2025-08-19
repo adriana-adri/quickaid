@@ -1,0 +1,8 @@
+{
+  "routes": [
+    {
+      "route": "/api/*",
+      "rewrite": "https://backendquickaid-gpfkafcsh6gvbses.eastasia-01.azurewebsites.net/api/{*}"
+    }
+  ]
+}
