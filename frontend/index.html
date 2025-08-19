@@ -98,8 +98,11 @@
     </div>
 
     <script>
+        const BACKEND_URL = 'https://backendquickaid-gpfkafcsh6gvbses.eastasia-01.azurewebsites.net';
+        
         document.getElementById('ticketForm').onsubmit = async (e) => {
             e.preventDefault();
+            
             const ticket = {
                 email: document.getElementById('email').value,
                 title: document.getElementById('title').value,
@@ -107,23 +110,70 @@
                 description: document.getElementById('description').value
             };
 
+            // Show loading state
+            const submitButton = document.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Submitting...';
+            submitButton.disabled = true;
+
             try {
-                const response = await fetch('/api/submit_ticket', {
+                console.log('Submitting ticket:', ticket);
+                
+                const response = await fetch(`${BACKEND_URL}/api/submit_ticket`, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify(ticket)
                 });
 
-                if (!response.ok) throw new Error('Ticket submission failed.');
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
 
                 const result = await response.json();
-                document.getElementById('successMessage').textContent = 'Ticket submitted! ID: ' + result.id;
+                console.log('Success result:', result);
+                
+                document.getElementById('successMessage').innerHTML = 
+                    `✅ Ticket submitted successfully!<br>Ticket ID: <strong>${result.id}</strong>`;
+                document.getElementById('successMessage').style.color = 'green';
                 document.getElementById('ticketForm').reset();
+                
             } catch (error) {
-                document.getElementById('successMessage').textContent = 'Error submitting ticket.';
+                console.error('Error submitting ticket:', error);
+                document.getElementById('successMessage').innerHTML = 
+                    `❌ Error submitting ticket: ${error.message}`;
                 document.getElementById('successMessage').style.color = 'red';
+            } finally {
+                // Reset button state
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
             }
         };
+
+        // Add a test connection button
+        window.addEventListener('load', () => {
+            const container = document.querySelector('.container');
+            const testButton = document.createElement('button');
+            testButton.textContent = 'Test Backend Connection';
+            testButton.style.marginTop = '10px';
+            testButton.style.backgroundColor = '#95a5a6';
+            testButton.onclick = async () => {
+                try {
+                    const response = await fetch(`${BACKEND_URL}/api/health`);
+                    const result = await response.text();
+                    alert(`Backend Status: ${response.status}\nResponse: ${result}`);
+                } catch (error) {
+                    alert(`Backend Error: ${error.message}`);
+                }
+            };
+            container.appendChild(testButton);
+        });
     </script>
 </body>
 </html>
