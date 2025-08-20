@@ -1,179 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>QuickAid Helpdesk</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f6fa;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f6fa;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
 
-        .container {
-            background-color: white;
-            padding: 30px 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 500px;
-        }
+      .container {
+        background-color: white;
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+      }
 
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 25px;
-        }
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 25px;
+      }
 
-        label {
-            display: block;
-            margin-top: 15px;
-            color: #34495e;
-            font-weight: bold;
-        }
+      label {
+        display: block;
+        margin-top: 15px;
+        color: #34495e;
+        font-weight: bold;
+      }
 
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        font-size: 14px;
+      }
 
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
+      textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
 
-        button {
-            margin-top: 20px;
-            width: 100%;
-            padding: 12px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+      button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 12px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
 
-        button:hover {
-            background-color: #2980b9;
-        }
+      button:hover {
+        background-color: #2980b9;
+      }
 
-        .success-message {
-            text-align: center;
-            color: green;
-            margin-top: 15px;
-        }
+      .success-message {
+        text-align: center;
+        color: green;
+        margin-top: 15px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>QuickAid Helpdesk</h1>
-        <form id="ticketForm">
-            <label for="email">Email</label>
-            <input type="email" id="email" required>
+      <h1>QuickAid Helpdesk</h1>
+      <form id="ticketForm">
+        <label for="email">Email</label>
+        <input type="email" id="email" required />
 
-            <label for="title">Title</label>
-            <input type="text" id="title" required>
+        <label for="title">Title</label>
+        <input type="text" id="title" required />
 
-            <label for="category">Category</label>
-            <input type="text" id="category" required>
+        <label for="category">Category</label>
+        <input type="text" id="category" required />
 
-            <label for="description">Description</label>
-            <textarea id="description" required></textarea>
+        <label for="description">Description</label>
+        <textarea id="description" required></textarea>
 
-            <button type="submit">Submit Ticket</button>
-        </form>
-        <div class="success-message" id="successMessage"></div>
+        <button type="submit">Submit Ticket</button>
+      </form>
+      <div class="success-message" id="successMessage"></div>
     </div>
 
     <script>
-        const BACKEND_URL = 'https://backendquickaid-gpfkafcsh6gvbses.eastasia-01.azurewebsites.net';
-        
-        document.getElementById('ticketForm').onsubmit = async (e) => {
-            e.preventDefault();
-            
-            const ticket = {
-                email: document.getElementById('email').value,
-                title: document.getElementById('title').value,
-                category: document.getElementById('category').value,
-                description: document.getElementById('description').value
-            };
+      const BACKEND_URL =
+        "https://backendquickaid-gpfkafcsh6gvbses.eastasia-01.azurewebsites.net";
 
-            // Show loading state
-            const submitButton = document.querySelector('button[type="submit"]');
-            const originalText = submitButton.textContent;
-            submitButton.textContent = 'Submitting...';
-            submitButton.disabled = true;
+      document.getElementById("ticketForm").onsubmit = async (e) => {
+        e.preventDefault();
 
-            try {
-                console.log('Submitting ticket:', ticket);
-                
-                const response = await fetch(`${BACKEND_URL}/api/submit_ticket`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(ticket)
-                });
-
-                console.log('Response status:', response.status);
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('Error response:', errorText);
-                    throw new Error(`HTTP ${response.status}: ${errorText}`);
-                }
-
-                const result = await response.json();
-                console.log('Success result:', result);
-                
-                document.getElementById('successMessage').innerHTML = 
-                    `✅ Ticket submitted successfully!<br>Ticket ID: <strong>${result.id}</strong>`;
-                document.getElementById('successMessage').style.color = 'green';
-                document.getElementById('ticketForm').reset();
-                
-            } catch (error) {
-                console.error('Error submitting ticket:', error);
-                document.getElementById('successMessage').innerHTML = 
-                    `❌ Error submitting ticket: ${error.message}`;
-                document.getElementById('successMessage').style.color = 'red';
-            } finally {
-                // Reset button state
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
-            }
+        const ticket = {
+          email: document.getElementById("email").value,
+          title: document.getElementById("title").value,
+          category: document.getElementById("category").value,
+          description: document.getElementById("description").value,
         };
 
-        // Add a test connection button
-        window.addEventListener('load', () => {
-            const container = document.querySelector('.container');
-            const testButton = document.createElement('button');
-            testButton.textContent = 'Test Backend Connection';
-            testButton.style.marginTop = '10px';
-            testButton.style.backgroundColor = '#95a5a6';
-            testButton.onclick = async () => {
-                try {
-                    const response = await fetch(`${BACKEND_URL}/api/health`);
-                    const result = await response.text();
-                    alert(`Backend Status: ${response.status}\nResponse: ${result}`);
-                } catch (error) {
-                    alert(`Backend Error: ${error.message}`);
-                }
-            };
-            container.appendChild(testButton);
-        });
+        // Show loading state
+        const submitButton = document.querySelector('button[type="submit"]');
+        const originalText = submitButton.textContent;
+        submitButton.textContent = "Submitting...";
+        submitButton.disabled = true;
+
+        try {
+          console.log("Submitting ticket:", ticket);
+
+          const response = await fetch(`${BACKEND_URL}/api/submit_ticket`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(ticket),
+          });
+
+          console.log("Response status:", response.status);
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error response:", errorText);
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+          }
+
+          const result = await response.json();
+          console.log("Success result:", result);
+
+          document.getElementById(
+            "successMessage"
+          ).innerHTML = `✅ Ticket submitted successfully!<br>Ticket ID: <strong>${result.id}</strong>`;
+          document.getElementById("successMessage").style.color = "green";
+          document.getElementById("ticketForm").reset();
+        } catch (error) {
+          console.error("Error submitting ticket:", error);
+          document.getElementById(
+            "successMessage"
+          ).innerHTML = `❌ Error submitting ticket: ${error.message}`;
+          document.getElementById("successMessage").style.color = "red";
+        } finally {
+          // Reset button state
+          submitButton.textContent = originalText;
+          submitButton.disabled = false;
+        }
+      };
     </script>
-</body>
+  </body>
 </html>
