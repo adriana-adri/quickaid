@@ -1,14 +1,27 @@
 import azure.functions as func
 import json
 import os
+import uuid
+import logging
+from datetime import datetime
 from azure.cosmos import CosmosClient
+
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
+
+# Initialize Key Vault client 
+VAULT_URL = "https://quickaid.vault.azure.net/"
+credential = DefaultAzureCredential()
+secret_client = SecretClient(vault_url=VAULT_URL, credential=credential)
+
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
         email = req.params.get("email")
-        endpoint = os.environ["COSMOS_ENDPOINT"]
-        key = os.environ["COSMOS_KEY"]
-        client = CosmosClient(endpoint, key)
+        # Get secrets from Key Vault
+        cosmos_endpoint = secret_client.get_secret("CosmosEndpoint").value
+        cosmos_key = secret_client.get_secret("CosmosKey").value
+        client = CosmosClient(cosmos_endpoint, cosmos_key)
         db = client.get_database_client("QuickAidDB")
         container = db.get_container_client("Tickets")
 
