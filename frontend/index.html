@@ -6,31 +6,87 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        background-color: #f2f6fa;
         margin: 0;
         padding: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         height: 100vh;
+        /* Gradient background */
+        background: linear-gradient(-45deg, #48bbc4, #3a97d1, #2772a3, #4bb9d2);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
       }
 
-      .container {
+      /* Animation keyframes */
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      .wrapper {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+        max-width: 1100px;
+        width: 90%;
+      }
+
+      .left {
+        flex: 1;
+        color: white;
+        padding-right: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* pushes description up, contact down */
+      }
+
+      .left h1 {
+        font-size: 2.2em;
+        margin-bottom: 15px;
+      }
+
+      .left p {
+        font-size: 1.2em;
+        line-height: 1.6;
+        opacity: 0.95;
+        margin-bottom: 60px; /* extra breathing room */
+      }
+
+      /* Contact block */
+      .contact {
+        text-align: center;
+        margin-top: 40px;
+      }
+      .contact p {
+        margin: 5px 0;
+      }
+      .contact .subtext {
+        color: #e0e0e0;
+        font-size: 0.95em;
+      }
+      .contact .highlight {
+        font-weight: bold;
+        color: #fff;
+        font-size: 1.05em;
+      }
+
+      /* RIGHT SECTION (form card) */
+      .right {
+        flex: 1;
         background-color: white;
         padding: 30px 40px;
-        border-radius: 10px;
+        border-radius: 12px;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 500px;
       }
 
-      h1 {
-        text-align: center;
-        color: #2c3e50;
-        margin-bottom: 25px;
-      }
-
-      label {
+      form label {
         display: block;
         margin-top: 15px;
         color: #34495e;
@@ -78,24 +134,43 @@
     </style>
   </head>
   <body>
-    <div class="container">
-      <h1>QuickAid Helpdesk</h1>
-      <form id="ticketForm">
-        <label for="email">Email</label>
-        <input type="email" id="email" required />
+    <div class="wrapper">
+      <!-- LEFT SIDE -->
+      <div class="left">
+        <h1>QuickAid Helpdesk</h1>
+        <p>
+          Welcome to QuickAid Helpdesk — your one-stop platform for reporting
+          campus issues. Submit a ticket for IT problems, facility concerns, or
+          lost property, and track your request in real time. You’ll receive an
+          email confirmation once your ticket is created.
+        </p>
 
-        <label for="title">Title</label>
-        <input type="text" id="title" required />
+        <!-- Contact Information -->
+        <div class="contact">
+          <p class="subtext">Need urgent assistance? Contact us:</p>
+          <p class="highlight">📞 (555) 123-HELP | 📧 support@quickaid.edu</p>
+        </div>
+      </div>
 
-        <label for="category">Category</label>
-        <input type="text" id="category" required />
+      <!-- RIGHT SIDE -->
+      <div class="right">
+        <form id="ticketForm">
+          <label for="email">Email</label>
+          <input type="email" id="email" required />
 
-        <label for="description">Description</label>
-        <textarea id="description" required></textarea>
+          <label for="title">Title</label>
+          <input type="text" id="title" required />
 
-        <button type="submit">Submit Ticket</button>
-      </form>
-      <div class="success-message" id="successMessage"></div>
+          <label for="category">Category</label>
+          <input type="text" id="category" required />
+
+          <label for="description">Description</label>
+          <textarea id="description" required></textarea>
+
+          <button type="submit">Submit Ticket</button>
+        </form>
+        <div class="success-message" id="successMessage"></div>
+      </div>
     </div>
 
     <script>
