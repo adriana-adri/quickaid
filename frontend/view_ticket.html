@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>View Ticket - QuickAid Helpdesk</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f6fa;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        /* Gradient background */
+        background: linear-gradient(-45deg, #48bbc4, #3a97d1, #2772a3, #4bb9d2);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+      }
+
+      .container {
+        background-color: white;
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 25px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #34495e;
+        font-weight: bold;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        font-size: 14px;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #3498db;
+      }
+
+      .result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 5px;
+        background: #f9f9f9;
+        font-size: 14px;
+        display: none;
+      }
+
+      .error {
+        color: red;
+      }
+
+      .success {
+        color: green;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-top: 15px;
+        text-align: center;
+        width: 100%;
+        text-decoration: none;
+        color: #3498db;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>QuickAid Helpdesk</h1>
+
+      <label for="ticketInput">Enter Ticket ID or Email</label>
+      <input type="text" id="ticketInput" placeholder="Ticket ID or Email" />
+
+      <button onclick="viewTicket()">View Ticket</button>
+
+      <div id="result" class="result"></div>
+
+      <a href="index.html" class="back-link">⬅ Back to Submit Ticket</a>
+    </div>
+
+    <script>
+      const BACKEND_URL =
+        "https://backendquickaid-gpfkafcsh6gvbses.eastasia-01.azurewebsites.net";
+
+      async function viewTicket() {
+        const input = document.getElementById("ticketInput").value.trim();
+        const resultBox = document.getElementById("result");
+
+        if (!input) {
+          resultBox.style.display = "block";
+          resultBox.className = "result error";
+          resultBox.innerHTML = "⚠ Please enter Ticket ID or Email.";
+          return;
+        }
+
+        try {
+          resultBox.style.display = "block";
+          resultBox.className = "result";
+          resultBox.innerHTML = "⏳ Fetching ticket details...";
+
+          const response = await fetch(
+            `${BACKEND_URL}/api/get_tickets?email=${encodeURIComponent(input)}`
+          );
+
+          if (!response.ok) {
+            throw new Error(`Ticket not found (HTTP ${response.status})`);
+          }
+
+          const tickets = await response.json();
+
+          if (!tickets || tickets.length === 0) {
+            throw new Error("No tickets found for this email");
+          }
+
+          // Display the first ticket or all tickets
+          const ticket = tickets[0];
+          resultBox.className = "result success";
+          resultBox.innerHTML = `
+            ✅ <strong>Ticket Found!</strong><br><br>
+            <strong>ID:</strong> ${ticket.id}<br>
+            <strong>Email:</strong> ${ticket.email}<br>
+            <strong>Title:</strong> ${ticket.title}<br>
+            <strong>Category:</strong> ${ticket.category}<br>
+            <strong>Description:</strong> ${ticket.description}<br>
+            <strong>Status:</strong> ${ticket.status || "Pending"}
+          `;
+        } catch (error) {
+          resultBox.className = "result error";
+          resultBox.innerHTML = `❌ ${error.message}`;
+        }
+      }
+    </script>
+  </body>
+</html>

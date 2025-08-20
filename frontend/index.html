@@ -147,6 +147,28 @@
         color: #b02a37;
         border: 1px solid #dc3545;
       }
+
+      .small-btn {
+        display: block; /* makes it behave like a full-width button */
+        width: 100%; /* match Submit Ticket width */
+        margin-top: 12px;
+        padding: 12px; /* same padding as Submit Ticket */
+        background-color: #f4f6f8;
+        color: #3498db;
+        border: 1px solid #3498db;
+        border-radius: 5px;
+        font-size: 16px; /* same size as Submit Ticket */
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+      }
+
+      .small-btn:hover {
+        background-color: #3498db;
+        color: #fff;
+      }
     </style>
   </head>
   <body>
@@ -185,6 +207,8 @@
 
           <button type="submit">Submit Ticket</button>
         </form>
+        <a href="view_ticket.html" class="small-btn">Check Ticket Status</a>
+
         <div class="success-message" id="successMessage"></div>
       </div>
     </div>
@@ -225,18 +249,29 @@
 
           console.log("Response status:", response.status);
 
-          const result = await response.json();
+          // Read raw response as text first
+          const rawText = await response.text();
+          let result = null;
+          try {
+            result = rawText ? JSON.parse(rawText) : null;
+          } catch (err) {
+            console.warn("Response is not JSON. Raw:", rawText);
+          }
 
           successBox.style.display = "block";
 
           if (response.ok) {
             successBox.className = "success-message success";
-            successBox.innerHTML = `✅ Ticket submitted successfully!<br>Ticket ID: <strong>${result.id}</strong>`;
+            if (result && result.id) {
+              successBox.innerHTML = `✅ Ticket submitted successfully!<br>Ticket ID: <strong>${result.id}</strong>`;
+            } else {
+              successBox.innerHTML = `✅ Ticket submitted successfully!`;
+            }
             document.getElementById("ticketForm").reset();
           } else {
             successBox.className = "success-message error";
             successBox.innerHTML = `❌ Error submitting ticket: ${
-              result.message || "Unknown error"
+              (result && result.message) || rawText || "Unknown error"
             }`;
           }
         } catch (error) {
