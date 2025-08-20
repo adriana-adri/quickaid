@@ -129,15 +129,18 @@
           resultBox.className = "result";
           resultBox.innerHTML = "⏳ Fetching ticket details...";
 
+          let queryParam = input.includes("@")
+            ? `email=${encodeURIComponent(input)}`
+            : `id=${encodeURIComponent(input)}`;
+
           const response = await fetch(
-            `${BACKEND_URL}/api/get_tickets?email=${encodeURIComponent(input)}`,
+            `${BACKEND_URL}/api/get_tickets?${queryParam}`,
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
               },
-              body: JSON.stringify(ticket),
             }
           );
 
