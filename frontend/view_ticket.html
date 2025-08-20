@@ -130,7 +130,15 @@
           resultBox.innerHTML = "⏳ Fetching ticket details...";
 
           const response = await fetch(
-            `${BACKEND_URL}/api/get_tickets?email=${encodeURIComponent(input)}`
+            `${BACKEND_URL}/api/get_tickets?email=${encodeURIComponent(input)}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify(ticket),
+            }
           );
 
           if (!response.ok) {
