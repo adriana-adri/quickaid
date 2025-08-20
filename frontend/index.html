@@ -126,10 +126,26 @@
         background-color: #2980b9;
       }
 
+      /* Success/Error message box */
       .success-message {
+        margin-top: 20px;
+        padding: 12px 16px;
+        border-radius: 8px;
         text-align: center;
-        color: green;
-        margin-top: 15px;
+        font-weight: bold;
+        display: none; /* hidden until triggered */
+      }
+
+      .success-message.success {
+        background-color: #e6ffed;
+        color: #1e7e34;
+        border: 1px solid #28a745;
+      }
+
+      .success-message.error {
+        background-color: #ffe6e6;
+        color: #b02a37;
+        border: 1px solid #dc3545;
       }
     </style>
   </head>
@@ -193,6 +209,8 @@
         submitButton.textContent = "Submitting...";
         submitButton.disabled = true;
 
+        const successBox = document.getElementById("successMessage");
+
         try {
           console.log("Submitting ticket:", ticket);
 
@@ -207,28 +225,26 @@
 
           console.log("Response status:", response.status);
 
-          if (!response.ok) {
-            const errorText = await response.text();
-            console.error("Error response:", errorText);
-            throw new Error(`HTTP ${response.status}: ${errorText}`);
-          }
-
           const result = await response.json();
-          console.log("Success result:", result);
 
-          document.getElementById(
-            "successMessage"
-          ).innerHTML = `✅ Ticket submitted successfully!<br>Ticket ID: <strong>${result.id}</strong>`;
-          document.getElementById("successMessage").style.color = "green";
-          document.getElementById("ticketForm").reset();
+          successBox.style.display = "block";
+
+          if (response.ok) {
+            successBox.className = "success-message success";
+            successBox.innerHTML = `✅ Ticket submitted successfully!<br>Ticket ID: <strong>${result.id}</strong>`;
+            document.getElementById("ticketForm").reset();
+          } else {
+            successBox.className = "success-message error";
+            successBox.innerHTML = `❌ Error submitting ticket: ${
+              result.message || "Unknown error"
+            }`;
+          }
         } catch (error) {
           console.error("Error submitting ticket:", error);
-          document.getElementById(
-            "successMessage"
-          ).innerHTML = `❌ Error submitting ticket: ${error.message}`;
-          document.getElementById("successMessage").style.color = "red";
+          successBox.className = "success-message error";
+          successBox.style.display = "block";
+          successBox.innerHTML = `❌ Error submitting ticket: ${error.message}`;
         } finally {
-          // Reset button state
           submitButton.textContent = originalText;
           submitButton.disabled = false;
         }
